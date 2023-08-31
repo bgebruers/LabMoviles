@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".linternaPrueba">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="143dp"
+        android:layout_height="216dp"
+        android:layout_marginStart="123dp"
+        android:layout_marginTop="104dp"
+        android:layout_marginEnd="145dp"
+        android:layout_marginBottom="248dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textBienvenida">
+
+        <Button
+            android:id="@+id/btnEnceder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Encender"
+            app:layout_constraintBottom_toTopOf="@+id/Button4"
+            tools:layout_editor_absoluteX="146dp" />
+
+        <Button
+            android:id="@+id/btApagar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#9C27B0"
+            android:text="Apagar"
+            app:layout_constraintTop_toBottomOf="@+id/Button3"
+            tools:layout_editor_absoluteX="145dp" />
+
+        <Button
+            android:id="@+id/btSalir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Salir"
+            app:layout_constraintBottom_toTopOf="@+id/Button3"
+            tools:layout_editor_absoluteX="148dp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textBienvenida"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="131dp"
+        android:layout_marginEnd="111dp"
+        android:layout_marginBottom="104dp"
+        android:text="Probar mi linterna"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
