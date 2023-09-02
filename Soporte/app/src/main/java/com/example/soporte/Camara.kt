@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraCaptureSession
@@ -51,11 +52,24 @@ class Camara : AppCompatActivity() {
         handlerThread.start()
         handler = Handler(handlerThread.looper)
 
-
+        val bundle= intent.extras
+        val idCam= bundle?.getInt("idCam")
 
         textureView.surfaceTextureListener=object:TextureView.SurfaceTextureListener{
             override fun onSurfaceTextureAvailable(p0: SurfaceTexture, p1: Int, p2: Int) {
-                open_camera()
+                if (idCam != null) {
+                    try{
+                        open_camera(idCam)
+                    }catch (e: Exception) {
+                        Toast.makeText(
+                            this@Camara,
+                            "Error de camaras",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }else{
+                    Toast.makeText(this@Camara, "Error al iniciar la camara", Toast.LENGTH_SHORT).show()
+                }
             }
 
             override fun onSurfaceTextureSizeChanged(p0: SurfaceTexture, p1: Int, p2: Int) {
@@ -94,17 +108,18 @@ class Camara : AppCompatActivity() {
                                                                                              },handler)
 
         var volver:Button = findViewById(R.id.volver)
+        volver.setBackgroundColor(Color.GRAY)
         volver.setOnClickListener {
             cameraDevice.close()
-            var intent:Intent = Intent(this, MainActivity::class.java)
+            var intent:Intent = Intent(this@Camara, MainActivity::class.java)
             startActivity(intent)
 
         }
     }
 
     @SuppressLint("MissingPermission")
-    fun open_camera(){
-        cameraManager.openCamera(cameraManager.cameraIdList[0], object:CameraDevice.StateCallback(){
+    fun open_camera(idCam: Int){
+        cameraManager.openCamera(cameraManager.cameraIdList[idCam], object:CameraDevice.StateCallback(){
             override fun onOpened(p0: CameraDevice) {
                 cameraDevice = p0
                 capReq = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
