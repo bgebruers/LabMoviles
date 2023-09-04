@@ -2,6 +2,7 @@ package com.example.soporte
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -27,9 +28,16 @@ class GPS : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        Toast.makeText(
+            this@GPS,
+            "El GPS funciona de manera correcta",
+            Toast.LENGTH_SHORT
+        ).show()
         createMaker()
     }
 
+
+    //para crear punto en especifico
     private fun createMaker(){
         val coordinates = LatLng(-35.668321, -63.770527)
         val marker = MarkerOptions().position(coordinates).title("Facultad de Ingenieria")
