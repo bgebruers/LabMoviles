@@ -26,10 +26,10 @@ class linternaPrueba : AppCompatActivity() {
             //ver tutorial de slack
             try {
                 camaraManager.setTorchMode("0", true)
-            }catch (e: Exception){
-                Toast.makeText(this@linternaPrueba, "El flash no funciona correctamente", Toast.LENGTH_SHORT).show()
+                }catch (e: Exception){
+                    Toast.makeText(this@linternaPrueba, "El flash no funciona correctamente", Toast.LENGTH_SHORT).show()
 
-            }
+                }
 
 
 

@@ -25,6 +25,9 @@ class MainActivity : AppCompatActivity() {
         val btGPS: Button = findViewById(R.id.btGPS)
         btGPS.setBackgroundColor(Color.GRAY)
 
+        val btParlantes: Button = findViewById(R.id.btParlantes)
+        btParlantes.setBackgroundColor(Color.GRAY)
+
         val btSalirApp: Button = findViewById(R.id.btSalirApp)
         btSalirApp.setBackgroundColor(Color.GRAY)
 
@@ -49,6 +52,11 @@ class MainActivity : AppCompatActivity() {
 
         btGPS.setOnClickListener{
             val intent: Intent = Intent(this, GPS::class.java)
+            startActivity(intent)
+        }
+
+        btParlantes.setOnClickListener{
+            val intent: Intent = Intent(this, Parlantes::class.java)
             startActivity(intent)
         }
 

@@ -8,16 +8,16 @@
 
 
     <LinearLayout
-        android:layout_width="180dp"
-        android:layout_height="274dp"
+        android:layout_width="197dp"
+        android:layout_height="304dp"
         android:layout_marginStart="130dp"
-        android:layout_marginTop="104dp"
+        android:layout_marginTop="170dp"
         android:layout_marginEnd="172dp"
         android:layout_marginBottom="384dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.211"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textSoporte"
         app:layout_constraintVertical_bias="0.0">
@@ -50,6 +50,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="GPS" />
+
+        <Button
+            android:id="@+id/btParlantes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Parlantes"
+            app:layout_constraintBottom_toTopOf="@+id/button2"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="149dp" />
 
         <Button
             android:id="@+id/btSalirApp"
