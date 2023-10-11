@@ -3,30 +3,20 @@ import 'package:blackner/src/pages/profilePage.dart';
 import 'package:flutter/material.dart';
 import 'package:blackner/src/pages/firstPage.dart';
 
-class Vlack extends StatelessWidget {
+
+class Home extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      
-      home: MyHomePage(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
+  State<Home> createState() => _HomeState();
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0;
+class _HomeState extends State<Home> {
+   int _currentIndex = 0;
 
   final List<Widget> _pages = [
     // aca se agregan las pantallas
     Container(
         child: Center(
-          child: firstPage(),
+          child: firstPage(),     //hacer el login
         ),
     ),
     Container(
@@ -36,10 +26,11 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
     Container(
       child: Center(
-        child: profilePage(),
+        child: ProfilePage(),
       ),
     ),
   ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -52,17 +43,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      body: _pages[_currentIndex], // Muestra la página actual
+      body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
-          // Cambia la página al hacer click en una pestaña
           setState(() {
             _currentIndex = index;
           });
         },
         items: const [
-          //son los botones del tab para navegar
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Inicio',
@@ -80,3 +69,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+

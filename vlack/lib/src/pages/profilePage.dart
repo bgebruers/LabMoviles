@@ -1,25 +1,23 @@
-import 'package:flutter/material.dart'; 
-import './message.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import './posteo.dart';
+import './database-service.dart';
+import './variableGlobal.dart';
 
-class profilePage extends StatelessWidget {
-  //lista de mensajes que vendria desde la bd
-  final List<Message> messages = [
-    Message('Blas Gebruers', 'Mensaje 1', '4'), // 4 estrellas
-    Message('Blas Gebruers', 'Mensaje 2', '3'), // 3 estrellas
-    Message('Blas Gebruers', 'Mensaje 3', '5'), // 5 estrellas
-    Message('Blas Gebruers', 'Mensaje 4', '2'), // 2 estrellas
-    Message('Blas Gebruers', 'Mensaje 5', '1'), // 1 estrella
-  ];
+String username = VariableGlobal.userName;
+
+class ProfilePage extends StatelessWidget {
+  final DatabaseService databaseService = DatabaseService();
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
+    
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Foto de perfil circular
             Container(
               width: 120.0,
               height: 120.0,
@@ -37,20 +35,20 @@ class profilePage extends StatelessWidget {
                 ),*/
               ),
             ),
-            // Información del usuario que vendria tambien desde la bd
-            const Padding(
+            // Información del usuario que vendría también desde la base de datos
+            Padding(
               padding: EdgeInsets.all(16.0),
               child: Column(
                 children: [
                   Text(
-                    'Blas Gebruers',
-                    style: TextStyle(
+                    username,
+                    style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 8.0),
-                 Text(
+                  const SizedBox(height: 8.0),
+                  const Text(
                     'Correo Electrónico: blas.gebruers@gmail.com\nEdad: 22 años\nUbicación: General Pico, La Pampa, Argentina',
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -60,92 +58,30 @@ class profilePage extends StatelessWidget {
                 ],
               ),
             ),
-            // Lista de mensajes de un mismo usuario que vendria desde la bd
-            ListView.separated(
-              shrinkWrap: true,
-              itemCount: messages.length,
-              separatorBuilder: (BuildContext context, int index) => Divider(),
-              itemBuilder: (context, index) {
-                final message = messages[index];
+            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: databaseService.posteosStream,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(snapshot.error.toString()),
+                  );
+                }
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-                return ListTile(
-                 
-                  //title: Text(message.text),
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                     Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              message.label,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Alinea elementos a la izquierda y a la derecha
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  message.text,
-                                ),
-                              ],
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end, // Alinea la calificación a la derecha
-                            children: [
-                            //alinear y que queden al lado
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    message.star.toString(), // Calificación como String
-                                  ),
-                                   //uso este menu para que cuando el usuario haga click en el icono se le despliegue un menu
-                                   //del 0 al 5 para puntuar
-                                   PopupMenuButton<int>(
-                                      icon: Icon(Icons.star, color: Colors.amber,), // Icono de estrella
-                                      
-                                      itemBuilder: (BuildContext context) {
-                                        return List.generate(6, (index) {
-                                          return PopupMenuItem<int>(
-                                            value: index,
-                                            child: Text('$index'),
-                                          );
-                                        });
-                                      },
-                                      onSelected: (int value) {
-                                        message.star = value.toString();
-                                        //mandar a la bd y luego hacer el promedio de estrellas
+                final data = snapshot.requireData;
+                // Se crea la ListView de los mensajes que vienen de la colección de la base de datos.
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: data.size,
+                  itemBuilder: (context, index) {
+                    final posteoMap = data.docs[index].data();
+                    final posteo = Posteo.fromMap(posteoMap);
 
-                                      },
-                                  ),
-                                 
-                                  
-                                ],
-                            )
-
-                            ],
-                        ),
-                        ]
-                      ),
-                    ],
-                  ),               
-                 
+                    return _PosteoItem(posteo);
+                  },
                 );
               },
             ),
@@ -155,3 +91,95 @@ class profilePage extends StatelessWidget {
     );
   }
 }
+
+class _PosteoItem extends StatelessWidget {
+  final Posteo posteo;
+
+  _PosteoItem(this.posteo);
+
+  
+  @override
+  Widget build(BuildContext context) {
+    if(posteo.nombreUsuario == username){
+     return Padding(
+      padding: const EdgeInsets.all(8.0),
+    
+      child: Card(
+        elevation: 2.0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              title: Text(
+                posteo.nombreUsuario,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Text(
+                posteo.texto,
+                style: const TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end, // Alinea elementos a la derecha
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      // lugar para implementrar la logica del putuar 
+                    },
+                    child: Row(
+                      children: [
+                        Text(
+                          posteo.valoracion,
+                          style: const TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                        PopupMenuButton<int>(
+                          icon: Icon(Icons.star, color: Colors.amber),
+                          itemBuilder: (BuildContext context) {
+                            return List.generate(6, (index) {
+                              return PopupMenuItem<int>(
+                                value: index,
+                                child: Text('$index'),
+                              );
+                            });
+                          },
+                          onSelected: (int value) {
+                            // Implementa aquí la lógica para guardar la puntuación
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text("          "),//espaciado artesanal para que se separe la valoracion y la fecha
+                  Text(
+                    posteo.date,
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    }else {
+      // Devuelve un widget vacío si el nombre del usuario ingresado no corresponse con el que se traer desde la bd
+      return SizedBox();
+    }
+
+  }
+}
+

@@ -7,4 +7,22 @@ class DatabaseService {
   Stream<QuerySnapshot<Map<String, dynamic>>> get posteosStream {
     return  FirebaseFirestore.instance.collection('posteo').snapshots();
   }
+
+  void cargarPost(String username, String date, String media, String texto, String valoracion) {
+  posteoCollection.add({
+    'nombreUsuario': username,
+    'date': date,
+    'media': media,
+    'texto': texto,
+    'valoracion': valoracion,
+  })
+  .then((_) {
+    // Éxito: los datos se agregaron correctamente
+    print('Datos agregados con éxito');
+  })
+  .catchError((error) {
+    // Error: ocurrió un error al agregar los datos
+    print('Error al agregar datos: $error');
+  });
+}
 }

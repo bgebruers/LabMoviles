@@ -1,5 +1,9 @@
+import 'package:blackner/src/pages/posteo.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import './database-service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import './variableGlobal.dart';
 
 class addPost extends StatefulWidget {
   @override
@@ -13,10 +17,19 @@ class addPostForm extends StatefulWidget {
 }
 
 class _addPostState extends State<addPost> {
+  final DatabaseService databaseService = DatabaseService();
+
   final TextEditingController _contentController = TextEditingController();
   int maxCharacters = 250; // Límite de caracteres inicial
-  String currentDateTime = '';    //variable para guardar la fecha y dia
+  String currentDateTime = '';
+  
+  String formattedDateTime = ''; // Variable de instancia para la fecha y hora
 
+  //captura la fecha y la hora
+  void captureDateTime() {
+    DateTime now = DateTime.now();
+    formattedDateTime = DateFormat('dd/MM/yyyy HH:mm:ss').format(now);
+  }
 
   //funcion para recortar la cantidad de caracteres permitidos para agregar 
   void _reduceCharacterLimit() {
@@ -40,8 +53,9 @@ class _addPostState extends State<addPost> {
             ),
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: TextFormField(
+              //controlador para capturar lo que el usuario ingresa
               controller: _contentController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Agregar Contenido',
                 border: InputBorder.none,
               ),
@@ -91,21 +105,24 @@ class _addPostState extends State<addPost> {
               ElevatedButton(
                 onPressed: () {
                   // Lógica para publicar el contenido
-                  String content = _contentController.text;
-                  if (content.isNotEmpty) {
-                    // Procesa y publica el contenido según tus necesidades
-                    // Puedes mostrar un mensaje de confirmación o realizar otras acciones aquí
-                    print('Contenido publicado: $content');     //content es el mensaje, ese va a la bd
-                    captureDateTime(); //fecha y hora capturada
+                  String contenido = _contentController.text;
+                   if (contenido.isNotEmpty) {
+                    
+                    captureDateTime(); // Captura la fecha y hora
+                    String date = formattedDateTime; // Accede a formattedDateTime
+
+                    databaseService.cargarPost(VariableGlobal.userName, date, "", contenido, "");
+
 
                   } else {
-                    // Muestra un mensaje de error si el campo está vacío
-                    ScaffoldMessenger.of(context).showSnackBar(
+                      // Muestra un mensaje de error si el campo está vacío
+                      ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Por favor, ingresa contenido antes de publicar.'),
                       ),
                     );
                   }
+                 
                 },
                 child: Text('Publicar'),
               ),
@@ -116,13 +133,4 @@ class _addPostState extends State<addPost> {
     );
   }
 
-//funcion para capturar la fecha 
-void captureDateTime() {
-  DateTime now = DateTime.now();
-  String formattedDateTime = DateFormat('dd/MM/yyyy HH:mm:ss').format(now); // Formatea la hora como "HH:mm:ss"
-  setState(() {
-    //agregar la fecha al mensaje y guardar en la bd
-    currentDateTime = formattedDateTime;
-  });
-}
 }
