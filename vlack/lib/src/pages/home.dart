@@ -36,12 +36,10 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text(
-            'Vlack',
-            textAlign: TextAlign.center,
-          ),
-        ),
+        title: const Text("Vlack"),
+        titleSpacing: 110.0,  //espaciado de texto, por lo que abajo me lo corria asique arregle a mano 
+        leading: Container(), //se usa esto porque al usar navegator.push me agrega la flecha para volver
+                              //entonces la hago no visible ni accesible
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(

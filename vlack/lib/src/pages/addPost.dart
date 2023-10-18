@@ -1,9 +1,10 @@
-import 'package:blackner/src/pages/posteo.dart';
+import 'package:blackner/src/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import './database-service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import './variableGlobal.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class addPost extends StatefulWidget {
   @override
@@ -21,9 +22,30 @@ class _addPostState extends State<addPost> {
 
   final TextEditingController _contentController = TextEditingController();
   int maxCharacters = 250; // Límite de caracteres inicial
-  String currentDateTime = '';
+  String currentDateTime = '';  //variable para almacenar la hora del posteo.
   
   String formattedDateTime = ''; // Variable de instancia para la fecha y hora
+
+
+  //tengo todo este codigo para pickear una imagen.
+  File? _image;
+
+  final picker = ImagePicker();
+  //captura la imagen 
+  Future getImagen() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        //si se elige una imagen recorto la cantidad de caracteres
+        _reduceCharacterLimit();
+        
+      } else {
+        print('No image selected.');
+      }
+      });
+  }
+
 
   //captura la fecha y la hora
   void captureDateTime() {
@@ -72,7 +94,7 @@ class _addPostState extends State<addPost> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.videocam, color: Colors.grey),
+                    icon: const Icon(Icons.videocam, color: Colors.grey),
                     onPressed: () {
                       // Lógica para agregar video
                       // Puedes cambiar el límite de caracteres aquí
@@ -81,17 +103,21 @@ class _addPostState extends State<addPost> {
                   ),
                 ],
               ),
-              SizedBox(width: 8.0), // Espacio entre los botones
+              const SizedBox(width: 8.0), // Espacio entre los botones
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.image, color: Colors.grey),
-                    onPressed: () {
-                      // Lógica para agregar imagen
-                      // Puedes cambiar el límite de caracteres aquí
-                      _reduceCharacterLimit();
-                    },
+                 TextButton(
+                    onPressed: ()=> getImagen(),                  
+                      // Muestra la imagen seleccionada
+                    child: _image == null
+                      ? const Icon(Icons.image, color: Colors.grey)
+                      : Image.file(
+                          _image!,
+                          height: 200,
+                          width: 200,
+                        ),
+                    
                   ),
                 ],
               ),
@@ -106,18 +132,56 @@ class _addPostState extends State<addPost> {
                 onPressed: () {
                   // Lógica para publicar el contenido
                   String contenido = _contentController.text;
+                 
                    if (contenido.isNotEmpty) {
                     
                     captureDateTime(); // Captura la fecha y hora
-                    String date = formattedDateTime; // Accede a formattedDateTime
+                    String date = formattedDateTime; // Accede a formattedDateTime para la foto
+                   
+                    //permite navegar a otras paginas, en este caso a la first page
+                    void navigateToHomePage(BuildContext context) {
+                      //esta funcion se usa para poder esperar 3 segundos para navegar a la otra, es para que 
+                      //se vea el mensaje que se muestra por pantalla.
+                      Future.delayed(const Duration(seconds: 0, milliseconds: 300), () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Home(), 
+                          ),
+                        );
+                      });
+                  }
 
-                    databaseService.cargarPost(VariableGlobal.userName, date, "", contenido, "");
 
+                    //esta funcion me permite ver el resultado de la insersion del post a la bd que viene desde dabase-service
+                    //es una funcion que espera recivir un bool que viene del callback
+                    void handlePostUpload(bool success) {
+                      if (success) {
+                        //muestra un mensaje y navega a otra página
+                        ScaffoldMessenger.of(context).showSnackBar(
+                         const SnackBar(
+                            content: Text('Post cargado exitosamente'),
+                          ),
+                        );
+                        //ir a la home
+                        navigateToHomePage(context); 
+                      } else {
+                        //Muestra un mensaje de error
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Error al cargar el post.'),
+                          ),
+                        );
+                      }
+                    }
+                    
+
+                    databaseService.cargarPost(VariableGlobal.userName, date, _image, contenido, "",  handlePostUpload);
 
                   } else {
                       // Muestra un mensaje de error si el campo está vacío
-                      ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
                         content: Text('Por favor, ingresa contenido antes de publicar.'),
                       ),
                     );
@@ -134,3 +198,4 @@ class _addPostState extends State<addPost> {
   }
 
 }
+

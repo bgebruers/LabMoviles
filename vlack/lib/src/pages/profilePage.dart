@@ -5,11 +5,10 @@ import './database-service.dart';
 import './variableGlobal.dart';
 
 String username = VariableGlobal.userName;
+final DatabaseService databaseService = DatabaseService();
 
 class ProfilePage extends StatelessWidget {
-  final DatabaseService databaseService = DatabaseService();
   
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,7 +154,8 @@ class _PosteoItem extends StatelessWidget {
                             });
                           },
                           onSelected: (int value) {
-                            // Implementa aquí la lógica para guardar la puntuación
+                            databaseService.actualizarValoracion(posteo.nombreUsuario, posteo.texto, value.toString());
+
                           },
                         ),
                       ],

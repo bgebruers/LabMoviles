@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import './posteo.dart';
 import './database-service.dart';
+import 'package:http/http.dart' as http;
+
+final DatabaseService databaseService = DatabaseService();
 
 class firstPage extends StatelessWidget {
-  final DatabaseService databaseService = DatabaseService();
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -21,7 +22,6 @@ class firstPage extends StatelessWidget {
         }
 
         final data = snapshot.requireData;
-        //se crea la listViw de los mensajes que vienen de la coleccion de la bd.
         return ListView.builder(
           itemCount: data.size,
           itemBuilder: (context, index) {
@@ -35,7 +35,7 @@ class firstPage extends StatelessWidget {
     );
   }
 }
-//clase para acomodar y mostrar los datos de cada coleccion.
+
 class _PosteoItem extends StatelessWidget {
   final Posteo posteo;
 
@@ -43,6 +43,7 @@ class _PosteoItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -60,20 +61,35 @@ class _PosteoItem extends StatelessWidget {
               ),
             ),
             Padding(
+               
               padding: const EdgeInsets.all(15.0),
-              child:Text(
-                posteo.texto,
-                style: const TextStyle(
-                  fontSize: 15,
+                child: posteo.media != ''
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      posteo.texto,
+                      style: const TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                    imagen, // Muestra la imagen si media no está vacío
+                  ],
+                )
+              : Text(
+                    posteo.texto,
+                    style: const TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
                 ),
-              ),
-             ),
+            
+        
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end, // Alinea elementos a la derecha
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  //widget que permite capturar evento, en este caso el onTap en las estrellas
                   GestureDetector(
                     onTap: () {
                       // Implementa aquí la lógica para puntuar el posteo
@@ -87,27 +103,27 @@ class _PosteoItem extends StatelessWidget {
                           ),
                         ),
                         PopupMenuButton<int>(
-                          icon: Icon(Icons.star, color: Colors.amber),
+                          icon: const Icon(Icons.star, color: Colors.amber),
                           itemBuilder: (BuildContext context) {
                             return List.generate(6, (index) {
                               return PopupMenuItem<int>(
                                 value: index,
-                                child: Text('$index'), 
+                                child: Text('$index'),
                               );
                             });
                           },
                           onSelected: (int value) {
-                            // Implementa aquí la lógica para guardar la puntuación
+                            databaseService.actualizarValoracion(
+                                posteo.nombreUsuario, posteo.texto, value.toString());
                           },
                         ),
-                      
                       ],
                     ),
                   ),
-                  Text("          "),//espaciado artesanal para que se separe la valoracion y la fecha
+                  Text("          "),
                   Text(
                     posteo.date,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 15,
                     ),
                   ),
@@ -119,5 +135,8 @@ class _PosteoItem extends StatelessWidget {
       ),
     );
   }
+ //trae la imagen con la url almacenada en el campo media de la base de datos
+  Widget get imagen{
+    return Image.network(posteo.media);
+  }
 }
-
