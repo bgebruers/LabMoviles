@@ -1,16 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import './posteo.dart';
-import './database-service.dart';
+import 'package:blackner/src/base_datos/database-service.dart';
 import './variableGlobal.dart';
+import './videoPlayer.dart';
 
 String username = VariableGlobal.userName;
 final DatabaseService databaseService = DatabaseService();
 
 class ProfilePage extends StatelessWidget {
-  
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
     
       body: SingleChildScrollView(
@@ -33,6 +35,7 @@ class ProfilePage extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),*/
               ),
+             
             ),
             // Información del usuario que vendría también desde la base de datos
             Padding(
@@ -91,6 +94,7 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
+
 class _PosteoItem extends StatelessWidget {
   final Posteo posteo;
 
@@ -118,7 +122,9 @@ class _PosteoItem extends StatelessWidget {
               ),
             ),
             Padding(
+              
              padding: const EdgeInsets.all(15.0), 
+               
                 child: posteo.media != ''?
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +135,10 @@ class _PosteoItem extends StatelessWidget {
                         fontSize: 15,
                       ),
                     ),
-                    imagen, // Muestra la imagen si media no está vacío
+                    //aca se chequea si la url tiene la palabra jpg, jpeg o png, si lo tiene es una imagen, sino es un video
+                   posteo.media.toLowerCase().contains('.jpg') || posteo.media.toLowerCase().contains('.jpeg') || posteo.media.toLowerCase().contains('.png')
+                      ? imagen // Muestra la imagen si es una imagen
+                      : video, // Muestra un reproductor de video si es un video, // Muestra la imagen si media no está vacío
                   ],
                 )
               : Text(
@@ -138,7 +147,7 @@ class _PosteoItem extends StatelessWidget {
                       fontSize: 15,
                     ),
                   ),
-            ),
+                ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
@@ -198,5 +207,10 @@ class _PosteoItem extends StatelessWidget {
   Widget get imagen{
     return Image.network(posteo.media);
   }
+  //trae un video con la url almacenada en la base de datos
+  Widget get video{
+    return VideoPlayerWidget(videoUrl: posteo.media);
+  }
+
 }
 

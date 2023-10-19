@@ -28,7 +28,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   
-  
 
   void _login(BuildContext context) {
     String username = _usernameController.text;

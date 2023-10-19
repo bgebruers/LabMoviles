@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import './posteo.dart';
-import './database-service.dart';
+import 'package:blackner/src/base_datos/database-service.dart';
 import './videoPlayer.dart';
 
 final DatabaseService databaseService = DatabaseService();

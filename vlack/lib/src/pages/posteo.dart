@@ -1,4 +1,3 @@
-
 class Posteo {
   
   final String texto;

@@ -48,16 +48,18 @@ class DatabaseService {
 
   Future<void> cargarPost(String username, String date, File? _image, String texto, String valoracion,  UploadCallback callback,) async {
    
+   /* ESTO ESTA COMENTADO PORQUE SINO NO ME DEJA POSTEAR, 
+      SERIA LA LOGICA QUE SE APLICARIA PARA CARGAR LAS IMAGENES.
     String media = _image.toString();
     if(media != ''){
       media = cargarImagen(_image!) as String;
-    }
+    }*/
 
     //si la imagen es nula carga el posteo, sino carga la imagen y todo el resto
       posteoCollection.add({
         'nombreUsuario': username,
         'date': date,
-        'media': media,
+        'media':'',
         'texto': texto,
         'valoracion': valoracion,
       })
@@ -92,4 +94,6 @@ class DatabaseService {
 
   }
 
+ 
 }
+

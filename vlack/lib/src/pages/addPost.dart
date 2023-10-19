@@ -1,7 +1,7 @@
 import 'package:blackner/src/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import './database-service.dart';
+import 'package:blackner/src/base_datos/database-service.dart';
 import './variableGlobal.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -25,7 +25,6 @@ class _addPostState extends State<addPost> {
   String currentDateTime = '';  //variable para almacenar la hora del posteo.
   
   String formattedDateTime = ''; // Variable de instancia para la fecha y hora
-
 
   //tengo todo este codigo para pickear una imagen.
   File? _image;
@@ -128,7 +127,7 @@ class _addPostState extends State<addPost> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  // Lógica para publicar el contenido
+                  // Logica para publicar el contenido
                   String contenido = _contentController.text;
                    if (contenido.isNotEmpty) {
                     captureDateTime(); // Captura la fecha y hora
