@@ -1,5 +1,3 @@
 class VariableGlobal{
-  static String userName = " ";
-  
-  
+  static String userName = " "; 
 }

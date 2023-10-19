@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_storage/firebase_storage.dart';
 
 
@@ -21,9 +20,9 @@ class DatabaseService {
   
 
 
-//esta funcion buscar el id del documento a actualizarle el nuevo valor, y luego actualiza.
-//compara el id del doc y el texto del doc, pq al haber varios nombre de usuarios iguales
-//busca siempre el mismo id y modifica siempre el mismo doc.
+  //esta funcion buscar el id del documento a actualizarle el nuevo valor, y luego actualiza.
+  //compara el id del doc y el texto del doc, pq al haber varios nombre de usuarios iguales
+  //busca siempre el mismo id y modifica siempre el mismo doc.
   void actualizarValoracion(
       String nombreUsuario, String texto, String nuevoValor) {
     // Busca el ID del documento
@@ -32,32 +31,29 @@ class DatabaseService {
         .where('texto', isEqualTo: texto)
         .get()
         .then((querySnapshot) {
-      if (querySnapshot.docs.isNotEmpty) {
-        final docID = querySnapshot.docs.first.id;
-        // Actualiza el campo
-        posteoCollection.doc(docID).update({
-          'valoracion': nuevoValor,
+          if (querySnapshot.docs.isNotEmpty) {
+            final docID = querySnapshot.docs.first.id;
+            // Actualiza el campo
+            posteoCollection.doc(docID).update({
+              'valoracion': nuevoValor,
+            });
+          } else {
+            print("error de id");
+          }
+        }).catchError((error) {
+          print("Error al obtener el ID del documento: $error");
+          
         });
-        
-      } else {
-        print("error de id");
-      }
-    }).catchError((error) {
-      print("Error al obtener el ID del documento: $error");
-      
-    });
   }
 
   Future<void> cargarPost(String username, String date, File? _image, String texto, String valoracion,  UploadCallback callback,) async {
    
     String media = _image.toString();
-    
-    print("la imagen media es: $cargarImagen");
-
-//si la imagen es nula carga el posteo, sino carga la imagen y todo el resto
-    
+    if(media != ''){
       media = cargarImagen(_image!) as String;
-    //CASO: _image nula
+    }
+
+    //si la imagen es nula carga el posteo, sino carga la imagen y todo el resto
       posteoCollection.add({
         'nombreUsuario': username,
         'date': date,
@@ -65,7 +61,7 @@ class DatabaseService {
         'texto': texto,
         'valoracion': valoracion,
       })
-        // Éxito: los datos se agregaron correctamente  
+        // exito: los datos se agregaron correctamente  
       .then((_) {
         //devuelve verdadero al addPost.dart
         callback(true); // Éxito
@@ -74,8 +70,7 @@ class DatabaseService {
         // Error: ocurrió un error al agregar los datos
         print('Error al agregar datos: $error');
         callback(false); // fracaso
-        
-    });
+      });
   
   }
 

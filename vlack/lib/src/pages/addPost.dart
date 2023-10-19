@@ -56,7 +56,7 @@ class _addPostState extends State<addPost> {
   //funcion para recortar la cantidad de caracteres permitidos para agregar 
   void _reduceCharacterLimit() {
     setState(() {
-      maxCharacters = 100; // Cambiar el límite de caracteres a 100
+      maxCharacters = 100; // cambiar el límite de caracteres a 100
     });
   }
 
@@ -81,8 +81,8 @@ class _addPostState extends State<addPost> {
                 hintText: 'Agregar Contenido',
                 border: InputBorder.none,
               ),
-              maxLines: null, // Permite múltiples líneas de texto
-              maxLength: maxCharacters, // Límite de caracteres dinámico
+              maxLines: null, // Permite multiples líneas de texto
+              maxLength: maxCharacters, // limite de caracteres dinámico
             ),
           ),
           SizedBox(height: 16.0),
@@ -97,8 +97,6 @@ class _addPostState extends State<addPost> {
                     icon: const Icon(Icons.videocam, color: Colors.grey),
                     onPressed: () {
                       // Lógica para agregar video
-                      // Puedes cambiar el límite de caracteres aquí
-                      _reduceCharacterLimit();
                     },
                   ),
                 ],
@@ -132,9 +130,7 @@ class _addPostState extends State<addPost> {
                 onPressed: () {
                   // Lógica para publicar el contenido
                   String contenido = _contentController.text;
-                 
                    if (contenido.isNotEmpty) {
-                    
                     captureDateTime(); // Captura la fecha y hora
                     String date = formattedDateTime; // Accede a formattedDateTime para la foto
                    
@@ -150,9 +146,7 @@ class _addPostState extends State<addPost> {
                           ),
                         );
                       });
-                  }
-
-
+                    }
                     //esta funcion me permite ver el resultado de la insersion del post a la bd que viene desde dabase-service
                     //es una funcion que espera recivir un bool que viene del callback
                     void handlePostUpload(bool success) {
@@ -174,8 +168,6 @@ class _addPostState extends State<addPost> {
                         );
                       }
                     }
-                    
-
                     databaseService.cargarPost(VariableGlobal.userName, date, _image, contenido, "",  handlePostUpload);
 
                   } else {

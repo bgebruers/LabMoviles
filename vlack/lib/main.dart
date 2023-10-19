@@ -12,5 +12,5 @@ Future<void> main() async {
   await FirebaseAppCheck.instance.activate(
     androidProvider: AndroidProvider.debug
   );
-  runApp(Vlack());
+  runApp(vlack());
 }

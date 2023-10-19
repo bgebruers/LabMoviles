@@ -118,13 +118,26 @@ class _PosteoItem extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Text(
-                posteo.texto,
-                style: const TextStyle(
-                  fontSize: 15,
-                ),
-              ),
+             padding: const EdgeInsets.all(15.0), 
+                child: posteo.media != ''?
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      posteo.texto,
+                      style: const TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                    imagen, // Muestra la imagen si media no está vacío
+                  ],
+                )
+              : Text(
+                    posteo.texto,
+                    style: const TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -180,6 +193,10 @@ class _PosteoItem extends StatelessWidget {
       return SizedBox();
     }
 
+  }
+  //trae la imagen con la url almacenada en el campo media de la base de datos
+  Widget get imagen{
+    return Image.network(posteo.media);
   }
 }
 

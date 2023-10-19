@@ -3,7 +3,7 @@ import './home.dart';
 import './variableGlobal.dart';
 
 
-class Vlack extends StatelessWidget {
+class vlack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

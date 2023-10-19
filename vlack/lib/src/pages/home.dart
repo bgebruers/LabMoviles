@@ -16,7 +16,7 @@ class _HomeState extends State<Home> {
     // aca se agregan las pantallas
     Container(
         child: Center(
-          child: firstPage(),     //hacer el login
+          child: firstPage(),    
         ),
     ),
     Container(

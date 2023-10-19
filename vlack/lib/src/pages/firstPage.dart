@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import './posteo.dart';
 import './database-service.dart';
-import 'package:http/http.dart' as http;
+import './videoPlayer.dart';
 
 final DatabaseService databaseService = DatabaseService();
 
@@ -20,7 +20,7 @@ class firstPage extends StatelessWidget {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-
+        //list que muestra los mensajes
         final data = snapshot.requireData;
         return ListView.builder(
           itemCount: data.size,
@@ -44,7 +44,7 @@ class _PosteoItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     
-    return Padding(
+    return Padding(      
       padding: const EdgeInsets.all(8.0),
       child: Card(
         elevation: 2.0,
@@ -61,10 +61,10 @@ class _PosteoItem extends StatelessWidget {
               ),
             ),
             Padding(
-               
+                
               padding: const EdgeInsets.all(15.0),
-                child: posteo.media != ''
-              ? Column(
+                child: posteo.media != ''?
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -73,7 +73,10 @@ class _PosteoItem extends StatelessWidget {
                         fontSize: 15,
                       ),
                     ),
-                    imagen, // Muestra la imagen si media no está vacío
+                    //aca se chequea si la url tiene la palabra jpg, jpeg o png, si lo tiene es una imagen, sino es un video
+                   posteo.media.toLowerCase().contains('.jpg') || posteo.media.toLowerCase().contains('.jpeg') || posteo.media.toLowerCase().contains('.png')
+                      ? imagen // Muestra la imagen si es una imagen
+                      : video, // Muestra un reproductor de video si es un video, // Muestra la imagen si media no está vacío
                   ],
                 )
               : Text(
@@ -83,17 +86,14 @@ class _PosteoItem extends StatelessWidget {
                     ),
                   ),
                 ),
-            
-        
+       
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      // Implementa aquí la lógica para puntuar el posteo
-                    },
+                    onTap: () {},
                     child: Row(
                       children: [
                         Text(
@@ -133,10 +133,19 @@ class _PosteoItem extends StatelessWidget {
           ],
         ),
       ),
+      
     );
   }
  //trae la imagen con la url almacenada en el campo media de la base de datos
   Widget get imagen{
     return Image.network(posteo.media);
   }
+
+ //trae un video con la url almacenada en la base de datos
+  Widget get video{
+    
+    return VideoPlayerWidget(videoUrl: posteo.media);
+  }
+
+  
 }
